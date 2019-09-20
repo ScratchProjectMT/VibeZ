@@ -1,0 +1,40 @@
+{
+  "name": "vibez",
+  "version": "0.0.1",
+  "description": "TeamMT Scratch Project",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=production node server/server.js",
+    "build": "NODE_ENV=production webpack",
+    "dev": "NODE_ENV=development webpack-dev-server --open & nodemon server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevinjnam/TeamMT.git"
+  },
+  "author": "TeamMT",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kevinjnam/TeamMT/issues"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "pg": "^7.12.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "sentiment": "^5.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "nodemon": "^1.19.2",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.40.2",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.8.1"
+  }
+}
