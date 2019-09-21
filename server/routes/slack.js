@@ -17,7 +17,7 @@ router.get('/channels', slackController.getChannels, (req, res) => {
 router.get('/auth', slackController.oAuth, (req, res) => {
   const { accessToken } = res.locals;
   console.log(accessToken);
-  res.status(200).json();
+  res.sendStatus(200);
 });
 
 

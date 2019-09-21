@@ -8,19 +8,19 @@ const DEFAULT_CHANNEL = 'CKA6RDALE';
  * @function getHistory fetch list of slack messages from slack API
  */
 slackController.getHistory = async (req, res, next) => {
-  //console.log('getHistory: ', getHistory);
+  console.log('slackController.getHistory');
   try {
     const channel = req.query.channel || DEFAULT_CHANNEL;
     const latest = req.query.latest || Math.floor(Date.now() / 1000);
     const oldest = req.query.oldest || latest - 86400;
     const limit = req.query.limit || 100;
-    const URI = `https://slack.com/api/conversations.history?token=${process.env.API_KEY}&channel=${channel}&latest=${latest}&limit=${limit}&oldest=${oldest}`;
-    const rawResult = await fetch(URI, {
-      method: 'GET',
+    const URI = `https://slack.com/api/conversations.history?&channel=${channel}&latest=${latest}&limit=${limit}&oldest=${oldest}`;
+    const options = {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "authorization": `Bearer ${Buffer.from(req.headers.authorization).toString('base64')}`,
       },
-    });
+    };
+    const rawResult = await fetch(URI, options);
     const { messages } = await rawResult.json();
     res.locals.data = messages;
     next();
@@ -39,15 +39,15 @@ slackController.getHistory = async (req, res, next) => {
  * @returns an array of objects. Each object has two keys (id and name)
  */
 slackController.getChannels = async (req, res, next) => {
-  //console.log('getChannels: ', getChannels);
+  console.log('slackController.getChannels');
+  const URI = `https://slack.com/api/conversations.list`;
+  const options = {
+    headers: {
+      "authorization": `Bearer ${Buffer.from(req.headers.authorization).toString('base64')}`,
+    },
+  };
   try {
-    const URI = `https://slack.com/api/conversations.list?token=${process.env.API_KEY}&pretty=1`
-    const rawChannels = await fetch(URI, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      }
-    });
+    const rawChannels = await fetch(URI, options);
     const { channels } = await rawChannels.json();
     const channelsList = channels.map(channel => {
       return {
@@ -75,17 +75,17 @@ slackController.oAuth = async (req, res, next) => {
       message: 'Did not receive code in query',
     })
   }
-
-  const URI = `https://slack.com/api/oauth.access?code=${req.query.code}&client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`;
+  const URI = `https://slack.com/api/oauth.access?code=${req.query.code}`;
+  const options = {
+    headers: {
+      "authorization": `Basic ${Buffer.from(process.env.CLIENT_ID + ":" + process.env.CLIENT_SECRET).toString('base64')}`,
+    },
+  };
   try {
-    const rawResult = await fetch(URI);
+    const rawResult = await fetch(URI, options);
     const result = await rawResult.json();
-    console.log(result);
     if (result.ok !== true) throw new Error('unsuccessful initial oauth');
-    res.locals.accessToken = result.access_token;
-    res.locals.userId = result.user_id;
-    res.locals.teamName = result.team_name;
-    res.locals.teamId = result.team_id;
+    res.locals.user = result;
     next();
   } catch (err) {
     next({
@@ -94,12 +94,6 @@ slackController.oAuth = async (req, res, next) => {
       message: `server error`,
     });
   }
-}
-
-slackController.exchangeToken = (req, res, next) => {
-  console.log('slackController.exchangeToken');
-  const URI = `https://slack.com/api/oauth.access`;
-  
 }
 
 module.exports = slackController;
