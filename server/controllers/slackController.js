@@ -75,13 +75,17 @@ slackController.oAuth = async (req, res, next) => {
       message: 'Did not receive code in query',
     })
   }
-  // We'll do a GET call to Slack's `oauth.access` endpoint, passing our app's client ID, client secret, and the code we just got as query parameters.
+
   const URI = `https://slack.com/api/oauth.access?code=${req.query.code}&client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`;
   try {
     const rawResult = await fetch(URI);
     const result = await rawResult.json();
+    console.log(result);
     if (result.ok !== true) throw new Error('unsuccessful initial oauth');
     res.locals.accessToken = result.access_token;
+    res.locals.userId = result.user_id;
+    res.locals.teamName = result.team_name;
+    res.locals.teamId = result.team_id;
     next();
   } catch (err) {
     next({
@@ -92,23 +96,10 @@ slackController.oAuth = async (req, res, next) => {
   }
 }
 
-slackController.getUser = async (req, res, next) => {
-  console.log('slackController.getUser');
-  const URI = `https://slack.com/api/users.identity?token=${res.locals.accessToken}`;
-  try {
-    const rawResult = await fetch(URI);
-    const result = await rawResult.json();
-    if (result.ok !== true) throw new Error('unsuccessful getUser from slack');
-    res.locals.user = result.user;
-    res.locals.team = result.team;
-    next();
-  } catch (err) {
-    next({
-      log: `error fetching to slack oauth getting user ${err}`,
-      status: 500,
-      message: `server error`,
-    });
-  }
+slackController.exchangeToken = (req, res, next) => {
+  console.log('slackController.exchangeToken');
+  const URI = `https://slack.com/api/oauth.access`;
+  
 }
 
 module.exports = slackController;

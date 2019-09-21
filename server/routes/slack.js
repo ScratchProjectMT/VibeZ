@@ -14,9 +14,10 @@ router.get('/channels', slackController.getChannels, (req, res) => {
 })
 
 // This route handles get request to a /oauth endpoint. We'll use this endpoint for handling the logic of the Slack oAuth process behind our app.
-app.get('/oauth', slackController.oAuth, slackController.getUser, (req, res) => {
-  const { oAuth } = res.locals;
-  res.status(200).json(oAuth);
+router.get('/auth', slackController.oAuth, (req, res) => {
+  const { accessToken } = res.locals;
+  console.log(accessToken);
+  res.status(200).json();
 });
 
 
