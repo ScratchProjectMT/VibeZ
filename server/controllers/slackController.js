@@ -8,7 +8,7 @@ const DEFAULT_CHANNEL = 'CKA6RDALE';
  * @function getHistory fetch list of slack messages from slack API
  */
 slackController.getHistory = async (req, res, next) => {
-  console.log('getHistory: ', getHistory);
+  //console.log('getHistory: ', getHistory);
   try {
     const channel = req.query.channel || DEFAULT_CHANNEL;
     const latest = req.query.latest || Math.floor(Date.now() / 1000);
@@ -38,7 +38,7 @@ slackController.getHistory = async (req, res, next) => {
  * @returns an array of objects. Each object has two keys (id and name)
  */
 slackController.getChannels = async (req, res, next) => {
-  console.log('getChannels: ', getChannels);
+  //console.log('getChannels: ', getChannels);
   try {
     const URI = `https://slack.com/api/conversations.list?token=${process.env.API_KEY}&pretty=1`
     const rawChannels = await fetch(URI, {
