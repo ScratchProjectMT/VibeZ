@@ -8,6 +8,10 @@ router.get('/', slackController.getHistory, sentimentController.parseData, (req,
   res.status(200).json(sentimentData);
 })
 
+router.get('/channels', slackController.getChannels, (req, res) => {
+  const { channels } = res.locals;
+  res.status(200).json(channels)
+})
 
 
 
