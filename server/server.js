@@ -22,6 +22,11 @@ db.once('open', function(callback) {
   console.log('Connected to Mongoose');
 });
 
+//serve index.html
+app.get('/', (req, res) => {
+  const index = path.resolve(__dirname, '../client/index.html');
+  res.sendFile(index);
+})
 //define route handlers
 app.use('/messages', messages)
 
