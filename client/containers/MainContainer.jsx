@@ -5,38 +5,14 @@ class MainContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      channel: 'CKA6RDALE',
+      channel: null,
+      allChannels: null,
       start: null,
       end: null,
       data: null,
       graphType: 'Line Graph',
       graph: false,
       limit: 100,
-      chartData: {
-        labels: ['Boston', 'Worcester', 'Springfield', 'Lowell', 'Cambridge', 'New Bedford'],
-        datasets: [
-          {
-            label: 'Population',
-            data: [
-              617594,
-              181045,
-              153060,
-              106519,
-              105162,
-              95072
-            ],
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.6)',
-              'rgba(54, 162, 235, 0.6)',
-              'rgba(255, 206, 86, 0.6)',
-              'rgba(75, 192, 192, 0.6)',
-              'rgba(153, 102, 255, 0.6)',
-              'rgba(255, 159, 64, 0.6)',
-              'rgba(255, 99, 132, 0.6)'
-            ]
-          }
-        ]
-      }
     };
   }
 
@@ -49,37 +25,26 @@ class MainContainer extends Component {
   }
 
   updateChannel(event) {
-    if(event.target.value === 'general') {
-      this.setState({channel: 'CKA6RDALE'});
-    }
-    else if(event.target.value === 'helpDesk') {
-      this.setState({channel: 'CM5TZRY82'});
-    }
-    else if(event.target.value === 'random') {
-      this.setState({channel: 'CK80VH5LM'});
+    for(let i = 0; i < this.state.allChannels.length; i++) {
+      if(this.state.allChannels[i].name === event.target.value) {
+        this.setState({channel: this.state.allChannels[i].id})
+      }
     }
   }
 
-  displayGraph(){
-    const newReq = {
-      channel: this.state.channel,
-      oldest: this.state.start,
-      latest: this.state.end,
-      limit: this.state.limit
-    }
-    fetch('/slack/', {
+  displayGraph() {
+    const {channel, start, end, limit} = this.state;
+    let oldDate = new Date(start).getTime()/1000;
+    let lateDate = new Date(end).getTime()/1000;
+    const fetchURL = `/slack/?channel=${channel}&oldest=${oldDate}&latest=${lateDate}&limit=${limit}`
+    fetch(fetchURL, {
       method: 'GET', 
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(newReq)
     })
       .then(res => res.json())
       .then(data => {
-        this.setState({data: data});
+        this.setState({data: data, graph: true});
       })
       .catch(err => console.log('MainContainer displayGraph ERROR: ', err));
-    this.setState({graph: true});
   }
 
   updateGraphType(event) {
@@ -90,16 +55,43 @@ class MainContainer extends Component {
     this.setState({limit: event.target.value});
   }
 
+  componentDidMount() {
+    // 24 hours => 86,400,000 milliseconds
+    // https://www.calculateme.com/time/hours/to-milliseconds/24
+    let present = new Date(Date.now()); //units = milli
+    let defaultTime = new Date(present - 86400000); //units = milli
+
+    let isoPresent = present.toISOString();
+    let isoDefault = defaultTime.toISOString();
+
+    let pTime = isoPresent.slice(0, 16); 
+    let dTime = isoDefault.slice(0, 16);
+
+    this.setState({ end: pTime })
+    this.setState({ start: dTime })
+
+    fetch('/slack/channels')
+      .then(res => res.json())
+      .then(data => {
+        this.setState({channel: data[0].id});
+        return this.setState({allChannels: data});
+      })
+      .catch(err => console.log('MainContainer.componentDidMount ERROR: ', err));
+    }
+
   render() {
-    console.log(this.state)
+    let channels = [];
+    if(this.state.allChannels) {
+      this.state.allChannels.forEach(channel => {
+        channels.push(<option value={channel.name}>{channel.name}</option>)
+      })
+    }
     return (
       <div>
         <div className='channelID'>
           <span>Channel: </span>
           <select onChange={e => {this.updateChannel(e)}}>
-            <option value='general'>General</option>
-            <option value='helpDesk'>Help Desk</option>
-            <option value='random'>Random</option>
+            {channels}
           </select>
         </div>
         <div className='graphType'>
@@ -111,9 +103,9 @@ class MainContainer extends Component {
         </div>
         <div className='options'>
           <span>Start Time: </span>
-          <input type='datetime-local' onChange={e => {this.updateStart(e)}}/>
+          <input type='datetime-local' defaultValue = {this.state.start} onChange={e => {this.updateStart(e)}}/>
           <span>End Time: </span>
-          <input type='datetime-local' onChange={e => {this.updateEnd(e)}}/>
+          <input type='datetime-local' defaultValue = {this.state.end} onChange={e => {this.updateEnd(e)}}/>
           <span>Limit: </span>
           <input type='number' defaultValue={100} onChange={e => {this.updateLimit(e)}}/>
         </div>
