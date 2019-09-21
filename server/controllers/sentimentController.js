@@ -22,3 +22,5 @@ sentimentController.parseData = (req, res, next) => {
 }
 
 module.exports = sentimentController;
+
+//https://slack.com/oauth/authorize?client_id=653541339828.770604966199&scope=channels%3Ahistory+channels%3Aread
