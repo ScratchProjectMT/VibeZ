@@ -28,8 +28,7 @@ module.exports = {
   },
   devServer: {
     proxy: {
-      '/': 'http://localhost:3000',
-      '/api': 'http://localhost:3000'
+      '/': 'http://localhost:3000'
     },
     contentBase: path.resolve(__dirname, './client'),
     compress: true,
