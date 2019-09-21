@@ -9,7 +9,7 @@ const port = 3000;
 
 //require routers
 const messages = require('./routes/messages');
-const slackController = require('./controllers/slackController');
+const slack = require('./routes/slack');
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -28,12 +28,10 @@ app.get('/', (req, res) => {
   const index = path.resolve(__dirname, '../client/index.html');
   res.sendFile(index);
  })
- //testing fetch to slack api
-app.get('/slacktest', slackController.getGeneralHistory, (req, res) => {
-  res.json(res.locals.data);
-})
+
 //define route handlers
 app.use('/messages', messages)
+app.use('/slack', slack)
 
 const defaultError = {
   log: 'Express error handler caught unknown middleware error',
