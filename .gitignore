@@ -2,3 +2,4 @@ npm-debug.log*
 node_modules/
 build/bundle.js
 package-lock.json
+.env
