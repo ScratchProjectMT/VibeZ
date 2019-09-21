@@ -4,7 +4,8 @@ const slackController = { };
 
 slackController.getGeneralHistory = async (req, res, next) => {
   console.log('slackController.getGeneralHistory');
-  const channel = 'CKA6RDALE';
+  // const channel = 'CKA6RDALE';
+  const channel = 'CK80VH5LM';
   const latest = Math.floor(Date.now() / 1000);
   const oldest = latest - 86400;
   const URI = `https://slack.com/api/conversations.history?token=${process.env.API_KEY}&channel=${channel}&latest=${latest}&oldest=${oldest}`;

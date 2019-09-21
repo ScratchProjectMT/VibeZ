@@ -10,6 +10,7 @@ const port = 3000;
 //require routers
 const messages = require('./routes/messages');
 const slackController = require('./controllers/slackController');
+const sentimentController = require('./controllers/sentimentController');
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -22,8 +23,8 @@ let db = mongoose.connection;
 db.once('open', function(callback) {
   console.log('Connected to Mongoose');
 });
-app.get('/slacktest', slackController.getGeneralHistory, (req, res) => {
-  res.json(res.locals.data);
+app.get('/slacktest', slackController.getGeneralHistory, sentimentController.parseData, (req, res) => {
+  res.json(res.locals.sentimentData);
 })
 //define route handlers
 app.use('/messages', messages)
