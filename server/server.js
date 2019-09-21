@@ -1,4 +1,4 @@
-// require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -9,6 +9,7 @@ const port = 3000;
 
 //require routers
 const messages = require('./routes/messages');
+const slackController = require('./controllers/slackController');
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -21,7 +22,9 @@ let db = mongoose.connection;
 db.once('open', function(callback) {
   console.log('Connected to Mongoose');
 });
-
+app.get('/slacktest', slackController.getGeneralHistory, (req, res) => {
+  res.json(res.locals.data);
+})
 //define route handlers
 app.use('/messages', messages)
 

@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 const slackController = { };
 
 slackController.getGeneralHistory = async (req, res, next) => {
@@ -14,9 +16,8 @@ slackController.getGeneralHistory = async (req, res, next) => {
   });
   const parsedResult = await rawResult.json();
   console.log(parsedResult);
+  res.locals.data = parsedResult;
   next();
 };
-
-process.env.API_KEY
 
 module.exports = slackController;
