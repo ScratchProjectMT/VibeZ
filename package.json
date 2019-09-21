@@ -19,6 +19,8 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
+    "chart.js": "^2.8.0",
+    "chartjs": "^0.3.24",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "mongoose": "^5.7.1",
@@ -26,6 +28,7 @@
     "path": "^0.12.7",
     "pg": "^7.12.1",
     "react": "^16.9.0",
+    "react-chartjs-2": "^2.8.0",
     "react-dom": "^16.9.0",
     "sentiment": "^5.0.2"
   },
