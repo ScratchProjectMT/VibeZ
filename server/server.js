@@ -1,4 +1,4 @@
-// require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -9,6 +9,7 @@ const port = 3000;
 
 //require routers
 const messages = require('./routes/messages');
+const slack = require('./routes/slack');
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -26,9 +27,11 @@ db.once('open', function(callback) {
 app.get('/', (req, res) => {
   const index = path.resolve(__dirname, '../client/index.html');
   res.sendFile(index);
-})
+ })
+
 //define route handlers
 app.use('/messages', messages)
+app.use('/slack', slack)
 
 const defaultError = {
   log: 'Express error handler caught unknown middleware error',
