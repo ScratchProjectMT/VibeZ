@@ -6,10 +6,10 @@ const sentimentController = { };
 sentimentController.parseData = (req, res, next) => {
   const sentimentData = [];
   res.locals.data.forEach(msg => {
-    sentimentData.push([
-      sentiment.analyze(msg.text).comparative,
-      Math.floor(msg.ts),
-    ]);
+    sentimentData.push({
+      time: Math.floor(msg.ts),
+      sentiment: sentiment.analyze(msg.text).comparative,
+    });
   });
   res.locals.sentimentData = sentimentData;
   next();

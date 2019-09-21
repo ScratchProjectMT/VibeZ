@@ -5,10 +5,10 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
-const port = 3000;
+const PORT = 3000;
 
 //require routers
-const messages = require('./routes/messages');
+const users = require('./routes/users');
 const slack = require('./routes/slack');
 
 // parse application/x-www-form-urlencoded
@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
  })
 
 //define route handlers
-app.use('/messages', messages)
+app.use('/users', users)
 app.use('/slack', slack)
 
 const defaultError = {
@@ -58,6 +58,6 @@ app.use((err, req, res, next) => {
   errorHandler(err, req, res, next);
 });
 
-app.listen(port, () => {
+app.listen(PORT, () => {
   console.log('Connected to the server.')
 })
