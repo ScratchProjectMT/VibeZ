@@ -14,9 +14,9 @@ slackController.getGeneralHistory = async (req, res, next) => {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   });
-  const parsedResult = await rawResult.json();
-  console.log(parsedResult);
-  res.locals.data = parsedResult;
+  const { messages } = await rawResult.json();
+  console.log(messages);
+  res.locals.data = messages;
   next();
 };
 
