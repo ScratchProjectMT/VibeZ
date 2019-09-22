@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 const PORT = 3000;
@@ -15,6 +16,8 @@ const slack = require('./routes/slack');
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
+
+//app.use(cors())
 
 //connect to mongoose database
 mongoose.connect('mongodb+srv://VibeZ:VibeZ@nodeproject-o98p0.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
@@ -29,7 +32,10 @@ app.get('/', (req, res) => {
   res.sendFile(index);
  })
 
-//define route handlers
+app.get('/auth', (req, res) => {
+  res.redirect(`https://cors-anywhere.herokuapp.com/https://slack.com/oauth/authorize?client_id=653541339828.770604966199&scope=channels%3Ahistory+channels%3Aread`)
+});
+ //define route handlers
 app.use('/users', users)
 app.use('/slack', slack)
 
