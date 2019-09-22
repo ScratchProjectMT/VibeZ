@@ -11,7 +11,8 @@ const DEFAULT_CHANNEL = 'CKA6RDALE';
  * 
  */
 slackController.getHistory = async (req, res, next) => {
-  console.log('slackController.getHistory');
+  console.log('slackController.getHistory: ', slackController.getHistory);
+  
   try {
     const channel = req.query.channel || DEFAULT_CHANNEL;
     const latest = req.query.latest || Math.floor(Date.now() / 1000);
@@ -21,7 +22,6 @@ slackController.getHistory = async (req, res, next) => {
     const URI = `https://slack.com/api/conversations.history?token=${token}&channel=${channel}&latest=${latest}&limit=${limit}&oldest=${oldest}`;
     const rawResult = await fetch(URI);
     const { messages } = await rawResult.json();
-    console.log('messages: ', messages);
     res.locals.data = messages;
     next();
   } catch (err) {
@@ -39,9 +39,9 @@ slackController.getHistory = async (req, res, next) => {
  * @returns an array of objects. Each object has two keys (id and name)
  */
 slackController.getChannels = async (req, res, next) => {
-  console.log('slackController.getChannels');
-  const token = req.cookies.token;
-  const URI = `https://slack.com/api/conversations.list/?token=${token}`;
+  console.log('slackController.getChannels: ', slackController.getChannels);
+  const legitToken = res.locals.token;
+  const URI = `https://slack.com/api/conversations.list/?token=${legitToken}`;
   try {
     const rawChannels = await fetch(URI);
     const { channels } = await rawChannels.json();
@@ -63,7 +63,7 @@ slackController.getChannels = async (req, res, next) => {
 }
 
 slackController.oAuth = async (req, res, next) => {
-  console.log('slackController.oAuth');
+  console.log('slackController.oAuth: ', slackController.oAuth);
   if (!req.query.code) {
     return next({
       log: 'No code',

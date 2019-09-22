@@ -32,7 +32,7 @@ const Graph = (props) => {
         <Line
           data={graphData}
           options={{ maintainAspectRatio: false }}
-          height={250}
+          height={400}
         />
       </div>
     )
@@ -43,7 +43,7 @@ const Graph = (props) => {
         <Bar
           data={graphData}
           options={{ maintainAspectRatio: false }}
-          height={250}
+          height={400}
         />
       </div>
     )

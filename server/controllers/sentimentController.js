@@ -10,6 +10,7 @@ const sentimentController = { };
  * Sentiment is a value from -1 to 1;
  */
 sentimentController.parseData = (req, res, next) => {
+  console.log('sentimentController.parseData: ', sentimentController.parseData);
   const sentimentData = [];
   res.locals.data.forEach(msg => {
     sentimentData.push({
