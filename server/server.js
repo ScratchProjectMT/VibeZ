@@ -5,11 +5,9 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 
 const app = express();
-const slackController = require('./controllers/slackController');
 const PORT = 3000;
 
 //require routers
-const users = require('./routes/users');
 const slack = require('./routes/slack');
 
 // parse application/x-www-form-urlencoded
@@ -20,7 +18,6 @@ app.use(bodyParser.json())
 app.use(cookieParser());
 
  //define route handlers
-app.use('/users', users)
 app.use('/slack', slack)
 
 app.get('/login', (req, res) => {
