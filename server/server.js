@@ -32,6 +32,9 @@ app.get('/', (req, res) => {
 //define route handlers
 app.use('/users', users)
 app.use('/slack', slack)
+app.get('/auth', (req, res) => {
+  res.redirect(`https://slack.com/oauth/authorize?client_id=653541339828.770604966199&scope=channels%3Ahistory+channels%3Aread`)
+});
 
 const defaultError = {
   log: 'Express error handler caught unknown middleware error',
