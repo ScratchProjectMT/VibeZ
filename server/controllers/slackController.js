@@ -85,7 +85,7 @@ slackController.oAuth = async (req, res, next) => {
     const rawResult = await fetch(URI, options);
     const result = await rawResult.json();
     if (result.ok !== true) throw new Error('unsuccessful initial oauth');
-    res.locals.user = result;
+    res.locals.accessToken = result.access_token;
     next();
   } catch (err) {
     next({
