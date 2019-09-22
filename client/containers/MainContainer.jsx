@@ -70,13 +70,13 @@ class MainContainer extends Component {
     this.setState({ end: pTime })
     this.setState({ start: dTime })
 
-    fetch('/slack/channels')
-      .then(res => res.json())
-      .then(data => {
-        this.setState({channel: data[0].id});
-        return this.setState({allChannels: data});
-      })
-      .catch(err => console.log('MainContainer.componentDidMount ERROR: ', err));
+    // fetch('/slack/channels')
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     this.setState({channel: data[0].id});
+    //     return this.setState({allChannels: data});
+    //   })
+    //   .catch(err => console.log('MainContainer.componentDidMount ERROR: ', err));
     }
 
   render() {
