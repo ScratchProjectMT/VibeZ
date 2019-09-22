@@ -8,12 +8,12 @@ const Graph = (props) => {
     const xAxis = [];
     const yAxis = [];
     const backgroundColor = [];
-    for(let i = 0; i < data.length; i++) {
+    for(let i = data.length-1; i >= 0; i--) {
       let newTime = new Date(data[i].time * 1000);
       newTime = newTime.toISOString().slice(0,16);
       xAxis.push(newTime);
       yAxis.push(data[i].sentiment);
-      backgroundColor.push('rgba(255, 99, 132, 0.6)');
+      backgroundColor.push('rgba(24, 166, 137, 0.6)');
     }
     graphData = {
       labels: xAxis,
@@ -32,6 +32,7 @@ const Graph = (props) => {
         <Line
           data={graphData}
           options={{ maintainAspectRatio: false }}
+          height={250}
         />
       </div>
     )
@@ -42,6 +43,7 @@ const Graph = (props) => {
         <Bar
           data={graphData}
           options={{ maintainAspectRatio: false }}
+          height={250}
         />
       </div>
     )
