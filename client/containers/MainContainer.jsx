@@ -40,7 +40,7 @@ class MainContainer extends Component {
     let lateDate = new Date(end).getTime()/1000;
     const fetchURL = `/slack/?channel=${channel}&oldest=${oldDate}&latest=${lateDate}&limit=${limit}`
     fetch(fetchURL, {
-      method: 'GET', 
+      method: 'GET',
     })
       .then(res => res.json())
       .then(data => {
@@ -55,20 +55,6 @@ class MainContainer extends Component {
 
   updateLimit(event) {
     this.setState({limit: event.target.value});
-  }
-
-  loginWithSlack() {
-    fetch('/auth', {
-      method: 'GET', 
-    })
-      .then(res => {
-        console.log(res) 
-      //   res.json()})
-      // .then(data => {
-      //   console.log(data)
-      //   this.setState({accessToken: data});
-      })
-      .catch(err => console.log('MainContainer loginWithSlack ERROR: ', err));
   }
 
   componentDidMount() {
@@ -87,67 +73,57 @@ class MainContainer extends Component {
 
     this.setState({ end: pTime })
     this.setState({ start: dTime })
-
-    // fetch('/slack/channels')
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     this.setState({channel: data[0].id});
-    //     return this.setState({allChannels: data});
-    //   })
-    //   .catch(err => console.log('MainContainer.componentDidMount ERROR: ', err));
-    }
+    fetch('/slack/channels')
+      .then(res => res.json())
+      .then(data => {
+        this.setState({
+          channel: data[0].id,
+          allChannels: data,
+        });
+      })
+      .catch(err => console.log('MainContainer.componentDidMount ERROR: ', err));
+  }
 
   render() {
-    if(this.state.authenticated) {
-      let channels = [];
-      if(this.state.allChannels) {
-        this.state.allChannels.forEach(channel => {
-          channels.push(<option value={channel.name}>{channel.name}</option>)
-        })
-      }
-      return (
-        <div className='main'>
-          <div className='channelID'>
-            <span>Channel: </span>
-            <select onChange={e => {this.updateChannel(e)}}>
-              {channels}
-            </select>
-          </div>
-          <div className='graphType'>
-            <span>Graph Type: </span>
-            <select onChange={e => {this.updateGraphType(e)}}>
-              <option value='Line Graph'>Line Graph</option>
-              <option value='Bar Graph'>Bar Graph</option>
-            </select>
-          </div>
-          <div className='options'>
-            <span>Start Time: </span>
-            <input type='datetime-local' defaultValue = {this.state.start} onChange={e => {this.updateStart(e)}}/>
-          </div >
-          <div className='options'>
-            <span>End Time: </span>
-            <input type='datetime-local' defaultValue = {this.state.end} onChange={e => {this.updateEnd(e)}}/>
-          </div>
-          <div className='options'>
-            <span>Limit: </span>
-            <input type='number' defaultValue={100} onChange={e => {this.updateLimit(e)}}/>
-          </div>
-          <div>
-            <button onClick={() => {this.displayGraph()}}>Enter</button>
-          </div>
-          <Graph graph={this.state.graph} graphType={this.state.graphType} data={this.state.data} chartData={this.state.chartData}/>
-        </div>
-      );
+    let channels = [];
+    if(this.state.allChannels) {
+      this.state.allChannels.forEach(channel => {
+        channels.push(<option value={channel.name}>{channel.name}</option>)
+      })
     }
-    else {
-      return (
-        <div className='main'>
-          <div>
-            <button className='signIn' onClick={() => {this.loginWithSlack()}}>Sign in with Slack</button>
-          </div>
+    return (
+      <div className='main'>
+        <div className='channelID'>
+          <span>Channel: </span>
+          <select onChange={e => {this.updateChannel(e)}}>
+            {channels}
+          </select>
         </div>
-      )
-    }
+        <div className='graphType'>
+          <span>Graph Type: </span>
+          <select onChange={e => {this.updateGraphType(e)}}>
+            <option value='Line Graph'>Line Graph</option>
+            <option value='Bar Graph'>Bar Graph</option>
+          </select>
+        </div>
+        <div className='options'>
+          <span>Start Time: </span>
+          <input type='datetime-local' defaultValue = {this.state.start} onChange={e => {this.updateStart(e)}}/>
+        </div >
+        <div className='options'>
+          <span>End Time: </span>
+          <input type='datetime-local' defaultValue = {this.state.end} onChange={e => {this.updateEnd(e)}}/>
+        </div>
+        <div className='options'>
+          <span>Limit: </span>
+          <input type='number' defaultValue={100} onChange={e => {this.updateLimit(e)}}/>
+        </div>
+        <div>
+          <button onClick={() => {this.displayGraph()}}>Enter</button>
+        </div>
+        <Graph graph={this.state.graph} graphType={this.state.graphType} data={this.state.data} chartData={this.state.chartData}/>
+      </div>
+    );
   }
 }
 

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production node server/server.js",
     "build": "NODE_ENV=production webpack",
-    "dev": "NODE_ENV=development webpack-dev-server --open & nodemon server/server.js"
+    "dev": "NODE_ENV=development webpack-dev-server & nodemon server/server.js"
   },
   "repository": {
     "type": "git",
@@ -21,9 +21,11 @@
     "body-parser": "^1.19.0",
     "chart.js": "^2.8.0",
     "chartjs": "^0.3.24",
+    "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.1",
     "node-fetch": "^2.6.0",
     "path": "^0.12.7",

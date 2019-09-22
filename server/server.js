@@ -1,11 +1,11 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const path = require('path');
-const cors = require('cors');
 
 const app = express();
+const slackController = require('./controllers/slackController');
 const PORT = 3000;
 
 //require routers
@@ -17,29 +17,21 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-//app.use(cors())
+app.use(cookieParser());
 
-//connect to mongoose database
-mongoose.connect('mongodb+srv://VibeZ:VibeZ@nodeproject-o98p0.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
-let db = mongoose.connection;
-db.once('open', function(callback) {
-  console.log('Connected to Mongoose');
+ //define route handlers
+app.use('/users', users)
+app.use('/slack', slack)
+
+app.get('/login', (req, res) => {
+  const login = path.resolve(__dirname, '../client/login.html');
+  return res.sendFile(login);
 });
 
 //serve index.html
 app.get('/', (req, res) => {
   const index = path.resolve(__dirname, '../client/index.html');
-  res.sendFile(index);
- })
-
-app.get('/auth', (req, res) => {
-  res.redirect(`https://cors-anywhere.herokuapp.com/https://slack.com/oauth/authorize?client_id=653541339828.770604966199&scope=channels%3Ahistory+channels%3Aread`)
-});
- //define route handlers
-app.use('/users', users)
-app.use('/slack', slack)
-app.get('/auth', (req, res) => {
-  res.redirect(`https://slack.com/oauth/authorize?client_id=653541339828.770604966199&scope=channels%3Ahistory+channels%3Aread`)
+  return res.sendFile(index);
 });
 
 const defaultError = {
@@ -57,16 +49,16 @@ app.all('*', (req, res) => {
 function errorHandler(err, req, res, next) {
   const errorObj = { ...defaultError, ...err };
   console.error(errorObj.log);
-  res.json({
+  return res.json({
     status: errorObj.status,
     message: errorObj.message,
   });
-}
+};
 
 app.use((err, req, res, next) => {
-  errorHandler(err, req, res, next);
+  return errorHandler(err, req, res, next);
 });
 
 app.listen(PORT, () => {
-  console.log('Connected to the server.')
-})
+  console.log(`Listening on port ${PORT}`);
+});
