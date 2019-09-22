@@ -5,6 +5,8 @@ class MainContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      authenticated: false,
+      accessToken: '',
       channel: null,
       allChannels: null,
       start: null,
@@ -38,7 +40,7 @@ class MainContainer extends Component {
     let lateDate = new Date(end).getTime()/1000;
     const fetchURL = `/slack/?channel=${channel}&oldest=${oldDate}&latest=${lateDate}&limit=${limit}`
     fetch(fetchURL, {
-      method: 'GET', 
+      method: 'GET',
     })
       .then(res => res.json())
       .then(data => {
@@ -59,9 +61,11 @@ class MainContainer extends Component {
     // 24 hours => 86,400,000 milliseconds
     // https://www.calculateme.com/time/hours/to-milliseconds/24
     let present = new Date(Date.now() - 25200000); //units = milli
+    console.log(present);
     let defaultTime = new Date(present - 86400000); //units = milli
 
     let isoPresent = present.toISOString();
+    console.log(isoPresent)
     let isoDefault = defaultTime.toISOString();
 
     let pTime = isoPresent.slice(0, 16); 
@@ -69,15 +73,16 @@ class MainContainer extends Component {
 
     this.setState({ end: pTime })
     this.setState({ start: dTime })
-
     fetch('/slack/channels')
       .then(res => res.json())
       .then(data => {
-        this.setState({channel: data[0].id});
-        return this.setState({allChannels: data});
+        this.setState({
+          channel: data[0].id,
+          allChannels: data,
+        });
       })
       .catch(err => console.log('MainContainer.componentDidMount ERROR: ', err));
-    }
+  }
 
   render() {
     let channels = [];
@@ -88,7 +93,7 @@ class MainContainer extends Component {
     }
     return (
       <div className='main'>
-        <div className='options'>
+        <div className='channelID'>
           <span>Channel: </span>
           <select onChange={e => {this.updateChannel(e)}}>
             {channels}
@@ -103,22 +108,20 @@ class MainContainer extends Component {
         </div>
         <div className='options' >
           <span>Start Time: </span>
-          <input type='datetime-local' id='start' defaultValue = {this.state.start} onChange={e => {this.updateStart(e)}}/>
+          <input type='datetime-local' defaultValue = {this.state.start} onChange={e => {this.updateStart(e)}}/>
         </div >
-        <div className='options' >
+        <div className='options'>
           <span>End Time: </span>
-          <input type='datetime-local' id='end' defaultValue = {this.state.end} onChange={e => {this.updateEnd(e)}}/>
+          <input type='datetime-local' defaultValue = {this.state.end} onChange={e => {this.updateEnd(e)}}/>
         </div>
         <div className='options'>
           <span>Limit: </span>
           <input type='number' defaultValue={100} onChange={e => {this.updateLimit(e)}}/>
         </div>
-        <div className='options'>
+        <div>
           <button onClick={() => {this.displayGraph()}}>Enter</button>
         </div>
-        <div className = 'graph'>
-          <Graph graph={this.state.graph} graphType={this.state.graphType} data={this.state.data} chartData={this.state.chartData}/>
-        </div>
+        <Graph graph={this.state.graph} graphType={this.state.graphType} data={this.state.data} chartData={this.state.chartData}/>
       </div>
     );
   }
