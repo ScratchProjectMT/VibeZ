@@ -58,7 +58,7 @@ class MainContainer extends Component {
   componentDidMount() {
     // 24 hours => 86,400,000 milliseconds
     // https://www.calculateme.com/time/hours/to-milliseconds/24
-    let present = new Date(Date.now()); //units = milli
+    let present = new Date(Date.now() - 25200000); //units = milli
     let defaultTime = new Date(present - 86400000); //units = milli
 
     let isoPresent = present.toISOString();
@@ -87,30 +87,38 @@ class MainContainer extends Component {
       })
     }
     return (
-      <div>
-        <div className='channelID'>
+      <div className='main'>
+        <div className='options'>
           <span>Channel: </span>
           <select onChange={e => {this.updateChannel(e)}}>
             {channels}
           </select>
         </div>
-        <div className='graphType'>
+        <div className='options'>
           <span>Graph Type: </span>
-          <select onChange={e => {this.updateGraphType(e)}}>
+          <select id='graphType' onChange={e => {this.updateGraphType(e)}}>
             <option value='Line Graph'>Line Graph</option>
             <option value='Bar Graph'>Bar Graph</option>
           </select>
         </div>
-        <div className='options'>
+        <div className='options' >
           <span>Start Time: </span>
-          <input type='datetime-local' defaultValue = {this.state.start} onChange={e => {this.updateStart(e)}}/>
+          <input type='datetime-local' id='start' defaultValue = {this.state.start} onChange={e => {this.updateStart(e)}}/>
+        </div >
+        <div className='options' >
           <span>End Time: </span>
-          <input type='datetime-local' defaultValue = {this.state.end} onChange={e => {this.updateEnd(e)}}/>
+          <input type='datetime-local' id='end' defaultValue = {this.state.end} onChange={e => {this.updateEnd(e)}}/>
+        </div>
+        <div className='options'>
           <span>Limit: </span>
           <input type='number' defaultValue={100} onChange={e => {this.updateLimit(e)}}/>
         </div>
-        <button onClick={() => {this.displayGraph()}}>Enter</button>
-        <Graph graph={this.state.graph} graphType={this.state.graphType} data={this.state.data} chartData={this.state.chartData}/>
+        <div className='options'>
+          <button onClick={() => {this.displayGraph()}}>Enter</button>
+        </div>
+        <div className = 'graph'>
+          <Graph graph={this.state.graph} graphType={this.state.graphType} data={this.state.data} chartData={this.state.chartData}/>
+        </div>
       </div>
     );
   }
