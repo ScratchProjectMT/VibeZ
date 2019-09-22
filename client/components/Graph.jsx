@@ -13,7 +13,7 @@ const Graph = (props) => {
       newTime = newTime.toISOString().slice(0,16);
       xAxis.push(newTime);
       yAxis.push(data[i].sentiment);
-      backgroundColor.push('rgba(255, 99, 132, 0.6)');
+      backgroundColor.push('rgba(24, 166, 137, 0.6)');
     }
     graphData = {
       labels: xAxis,
@@ -32,6 +32,7 @@ const Graph = (props) => {
         <Line
           data={graphData}
           options={{ maintainAspectRatio: false }}
+          height={250}
         />
       </div>
     )
@@ -42,6 +43,7 @@ const Graph = (props) => {
         <Bar
           data={graphData}
           options={{ maintainAspectRatio: false }}
+          height={250}
         />
       </div>
     )

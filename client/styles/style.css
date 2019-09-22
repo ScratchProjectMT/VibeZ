@@ -14,12 +14,24 @@ html, body {
     text-align: center;
     color: #422761;
     margin-top: 0;
-    padding-top: 80px;
+    padding-top: 50px;
+    font-size: 80px;
   } 
   
   input, select, button {
-    font-size: 18px;
+    font-size: 20px;
     background-color: #F2F2F2;
+    color: #4d394b;
+    border-radius: 10px;
+    padding: 5px;
+  }
+
+  #start, #end {
+    font-size: 18px;
+  }
+
+  span {
+    color: #010101;
   }
   
   .main{
@@ -28,4 +40,16 @@ html, body {
    justify-content: center;
    align-content: center;
    text-align: center;
+  }
+
+  .options {
+    margin: 5px 0;
+  }
+
+  .graph {
+    margin-top: 50px;
+  }
+
+  #graphType {
+    padding: 5px 35px;
   }
