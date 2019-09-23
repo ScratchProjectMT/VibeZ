@@ -44,7 +44,7 @@ slackController.getHistory = async (req, res, next) => {
       status: 500,
       log: `Get History error: ${err}`,
       message: 'Server error while trying to get slack messages',
-    })
+    });
   }
 }
 
@@ -74,7 +74,7 @@ slackController.getChannels = async (req, res, next) => {
       status: 500,
       log: `Get Channel error: ${err}`,
       message: 'Server error while trying to get channels list',
-    })
+    });
   } 
 }
 
@@ -95,7 +95,7 @@ slackController.oAuth = async (req, res, next) => {
       log: 'No code',
       status: 400,
       message: 'Did not receive code in query',
-    })
+    });
   }
   const URI = `${API_URI}/oauth.access?code=${req.query.code}`;
   const options = {
@@ -106,7 +106,6 @@ slackController.oAuth = async (req, res, next) => {
   try {
     const rawResult = await fetch(URI, options);
     const result = await rawResult.json();
-    console.dir(result);
     if (result.ok !== true) throw new Error('unsuccessful initial oauth');
     res.locals.token = result.access_token;
     res.locals.workspace = result.team_name;
@@ -115,7 +114,7 @@ slackController.oAuth = async (req, res, next) => {
     return next({
       log: `error fetching to slack oauth ${err}`,
       status: 500,
-      message: `server error`,
+      message: `Server error`,
     });
   }
 }

@@ -14,10 +14,10 @@ const defaultError = {
   message: { err: 'An error occurred' }, 
 };
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.use('/slack', slackRouter)
+app.use('/slack', slackRouter);
 
 app.get('/', (req, res) => {
   const index = path.resolve(__dirname, '../client/index.html');

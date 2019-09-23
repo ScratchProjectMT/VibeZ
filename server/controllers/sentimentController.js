@@ -7,7 +7,7 @@ const sentimentController = { };
  * @function parseData Parse messages and return an array of objects.
  * Each object will contain four keys: Message, Sentiment, ReactionSentiment, and Time
  * Message: the original text of the message
- * Sentiment: sentiment value (neutral is 0, absolute value is sentiment intensity, positive is good, negative is bad)
+ * Sentiment: neutral is 0, absolute value is sentiment intensity, positive is good, negative is bad
  * ReactionSentiment: the sentiment value for the reactionString
  * Time: the time the message was posted (seconds since 1970)
  * 
