@@ -11,13 +11,11 @@ const sentimentController = { };
  */
 sentimentController.parseData = (req, res, next) => {
   console.log('sentimentController.parseData');
-  const sentimentData = res.locals.messages.map(msg => {
-    return {
+  const sentimentData = res.locals.messages.map(msg => ({
       message: msg.text,
       sentiment: sentiment.analyze(msg.text).comparative,
       time: Math.floor(msg.ts),
-    };
-  });
+  }));
   res.locals.sentimentData = sentimentData;
   next();
 }

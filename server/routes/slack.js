@@ -1,5 +1,4 @@
 const express = require('express');
-const path = require('path');
 
 const slackController = require('../controllers/slackController');
 const jwtController = require('../controllers/jwtController')
@@ -19,7 +18,6 @@ router.get('/channels', jwtController.verify, slackController.getChannels, (req,
 // This route handles get request to a /oauth endpoint. We'll use this endpoint for handling the logic of the Slack oAuth process behind our app.
 router.get('/auth', slackController.oAuth, jwtController.create, (req, res) => {
   const { token } = res.locals;
-  console.log(token);
   res.cookie('token', token, { httpOnly: true });
   return res.redirect('/');
 });
