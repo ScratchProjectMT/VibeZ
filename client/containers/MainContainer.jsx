@@ -81,7 +81,7 @@ class MainContainer extends Component {
         this.setState({
           channel: data.channels[0].id,
           allChannels: data.channels,
-          workspace: data.workspace
+          workspace: `Connected to: ${data.workspace}`
         });
       })
       .catch(err => console.log('MainContainer.componentDidMount ERROR: ', err));

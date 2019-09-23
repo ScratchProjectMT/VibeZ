@@ -28,7 +28,7 @@ router.get('/auth', slackController.oAuth, jwtController.create, (req, res) => {
   const { token } = res.locals;
   const { workspace } = res.locals;
   res.cookie('token', token, { httpOnly: true });
-  res.cookie('activeWorkspace', workspace);
+  res.cookie('workspace', workspace);
   return res.redirect('/');
 });
 
