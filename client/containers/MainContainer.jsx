@@ -15,6 +15,7 @@ class MainContainer extends Component {
       graphType: 'Line Graph',
       graph: false,
       limit: 100,
+      workspace: 'Connect to a Slack Workspace'
     };
   }
 
@@ -58,11 +59,12 @@ class MainContainer extends Component {
   }
 
   componentDidMount() {
-    // 24 hours => 86,400,000 milliseconds
+    // 1 month => 2.629746 * Math.pow(10, 9) milliseconds
+    // 2 weeks => 1.2096 * Math.pow(10, 9) milliseconds
     // https://www.calculateme.com/time/hours/to-milliseconds/24
     let present = new Date(Date.now() - 25200000); //units = milli
     console.log(present);
-    let defaultTime = new Date(present - 86400000); //units = milli
+    let defaultTime = new Date(present - (1.2096 * Math.pow(10, 9))); //units = milli
 
     let isoPresent = present.toISOString();
     console.log(isoPresent)
@@ -77,8 +79,9 @@ class MainContainer extends Component {
       .then(res => res.json())
       .then(data => {
         this.setState({
-          channel: data[0].id,
-          allChannels: data,
+          channel: data.channels[0].id,
+          allChannels: data.channels,
+          workspace: `Connected to: ${data.workspace}`
         });
       })
       .catch(err => console.log('MainContainer.componentDidMount ERROR: ', err));
@@ -93,35 +96,40 @@ class MainContainer extends Component {
     }
     return (
       <div className='main'>
+        <nav>
+          <h1>VibeZ</h1>
+          <h2>{this.state.workspace}</h2>
+        </nav>
+        <a href="https://slack.com/oauth/authorize?client_id=653541339828.770547895078&scope=channels:history,channels:read"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
         <div className='channelID'>
           <span>Channel: </span>
-          <select onChange={e => {this.updateChannel(e)}}>
+          <select onChange={e => { this.updateChannel(e) }}>
             {channels}
           </select>
         </div>
         <div className='options'>
           <span>Graph Type: </span>
-          <select id='graphType' onChange={e => {this.updateGraphType(e)}}>
+          <select id='graphType' onChange={e => { this.updateGraphType(e) }}>
             <option value='Line Graph'>Line Graph</option>
             <option value='Bar Graph'>Bar Graph</option>
           </select>
         </div>
         <div className='options' >
           <span>Start Time: </span>
-          <input type='datetime-local' defaultValue = {this.state.start} onChange={e => {this.updateStart(e)}}/>
+          <input type='datetime-local' defaultValue={this.state.start} onChange={e => { this.updateStart(e) }} />
         </div >
         <div className='options'>
           <span>End Time: </span>
-          <input type='datetime-local' defaultValue = {this.state.end} onChange={e => {this.updateEnd(e)}}/>
+          <input type='datetime-local' defaultValue={this.state.end} onChange={e => { this.updateEnd(e) }} />
         </div>
         <div className='options'>
           <span>Limit: </span>
-          <input type='number' defaultValue={100} onChange={e => {this.updateLimit(e)}}/>
+          <input type='number' defaultValue={100} onChange={e => { this.updateLimit(e) }} />
         </div>
         <div>
-          <button onClick={() => {this.displayGraph()}}>Enter</button>
+          <button id="ent" onClick={() => { this.displayGraph() }}>Enter</button>
         </div>
-        <Graph graph={this.state.graph} graphType={this.state.graphType} data={this.state.data} chartData={this.state.chartData}/>
+        <Graph graph={this.state.graph} graphType={this.state.graphType} data={this.state.data} chartData={this.state.chartData} />
       </div>
     );
   }

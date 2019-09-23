@@ -14,14 +14,21 @@ router.get('/', jwtController.verify, slackController.getHistory, sentimentContr
 // Delivers list of channels to client
 router.get('/channels', jwtController.verify, slackController.getChannels, (req, res) => {
   const { channels } = res.locals;
-  return res.status(200).json(channels);
+  const { workspace } = req.cookies;
+  const workspaceData = {
+    workspace,
+    channels,
+  };
+  return res.status(200).json(workspaceData);
 });
 
 // Redirect URL from Slack after user approves our App with requested scopes
 // For more information: https://api.slack.com/docs/oauth
 router.get('/auth', slackController.oAuth, jwtController.create, (req, res) => {
   const { token } = res.locals;
+  const { workspace } = res.locals;
   res.cookie('token', token, { httpOnly: true });
+  res.cookie('workspace', workspace);
   return res.redirect('/');
 });
 
