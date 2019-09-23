@@ -14,7 +14,7 @@ router.get('/', jwtController.verify, slackController.getHistory, sentimentContr
 // Delivers list of channels to client
 router.get('/channels', jwtController.verify, slackController.getChannels, (req, res) => {
   const { channels } = res.locals;
-  const { workspace } = res.locals;
+  const { workspace } = req.cookies;
   const workspaceData = {
     workspace,
     channels,
