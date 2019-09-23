@@ -27,7 +27,7 @@ slackController.getHistory = async (req, res, next) => {
   try {
     const rawResult = await fetch(URI);
     const { messages } = await rawResult.json();
-    // This step parses the reactions (i.e. emoji responses) into a string
+    // This step parses the reactions (i.e. emoji responses) into a string. String will be empty if there are no reactions.
     const parsedMessages = messages.map(msg => ({
       text: msg.text,
       reactionString: (msg.reactions)
@@ -37,7 +37,6 @@ slackController.getHistory = async (req, res, next) => {
         : '',
       ts: msg.ts,
     }));
-    console.dir(parsedMessages);
     res.locals.messages = parsedMessages;
     next();
   } catch (err) {
