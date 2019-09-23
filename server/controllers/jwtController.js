@@ -12,7 +12,7 @@ jwtController.create = (req, res, next) => {
   console.log('jwtController.create');
   const token = jwt.sign(res.locals.token, process.env.PRIVATE_KEY);
   res.locals.token = token;
-  return next()
+  return next();
 }
 
 /**
@@ -38,7 +38,7 @@ jwtController.verify = (req, res, next) => {
     return next({
       log: `error verifying jwt ${err}`,
       status: 400,
-      message: 'server error'
+      message: 'server error',
     });
   }
 }
