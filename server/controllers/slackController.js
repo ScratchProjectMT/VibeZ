@@ -7,11 +7,11 @@ const API_URI = `https://slack.com/api`;
 /** 
  * @function getHistory fetch list of slack messages from slack API
  * The url has the query params token, channel id, latest, limit, and oldest.
- * Token: the user's access token
- * Channel ID: the channel to get the chat history for
- * Latest: The latest time (i.e. end)
- * Limit: Maximum number of messages
- * Oldest: The oldest time (i.e. start)
+ * Token (Required): the user's access token.
+ * Channel ID (Required): the channel to get the chat history for.
+ * Latest: The latest time (i.e. end). Defaults to the current time.
+ * Limit: Maximum number of messages. Defaults to 100.
+ * Oldest: The oldest time (i.e. start). Defaults to 24 hours before Latest.
  * The data is stored in res.locals.messages
  * 
  * For more information: https://api.slack.com/methods/conversations.history
@@ -27,7 +27,17 @@ slackController.getHistory = async (req, res, next) => {
   try {
     const rawResult = await fetch(URI);
     const { messages } = await rawResult.json();
-    res.locals.messages = messages;
+    // This step parses the reactions (i.e. emoji responses) into a string. String will be empty if there are no reactions.
+    const parsedMessages = messages.map(msg => ({
+      text: msg.text,
+      reactionString: (msg.reactions)
+        ? msg.reactions
+          .reduce((reactionString, reaction) => reactionString.concat(`${reaction.name} `.repeat(reaction.count)), '')
+          .slice(0, -1)
+        : '',
+      ts: msg.ts,
+    }));
+    res.locals.messages = parsedMessages;
     next();
   } catch (err) {
     return next({
@@ -53,19 +63,17 @@ slackController.getChannels = async (req, res, next) => {
   try {
     const rawChannels = await fetch(URI);
     const { channels } = await rawChannels.json();
-    const channelsList = channels.map(channel => {
-      return {
-        id: channel['id'],
-        name: channel['name'],
-      }
-    })
-    res.locals.channels = channelsList
+    const channelsList = channels.map(channel => ({
+      id: channel['id'],
+      name: channel['name'],
+    }));
+    res.locals.channels = channelsList;
     return next();
   } catch (err) {
     return next({
       status: 500,
       log: `Get Channel error: ${err}`,
-      message: 'Server error while trying to get channels list'
+      message: 'Server error while trying to get channels list',
     })
   } 
 }
