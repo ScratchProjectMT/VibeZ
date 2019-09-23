@@ -7,11 +7,11 @@ const API_URI = `https://slack.com/api`;
 /** 
  * @function getHistory fetch list of slack messages from slack API
  * The url has the query params token, channel id, latest, limit, and oldest.
- * Token: the user's access token
- * Channel ID: the channel to get the chat history for
- * Latest: The latest time (i.e. end)
- * Limit: Maximum number of messages
- * Oldest: The oldest time (i.e. start)
+ * Token (Required): the user's access token.
+ * Channel ID (Required): the channel to get the chat history for.
+ * Latest: The latest time (i.e. end). Defaults to the current time.
+ * Limit: Maximum number of messages. Defaults to 100.
+ * Oldest: The oldest time (i.e. start). Defaults to 24 hours before Latest.
  * The data is stored in res.locals.messages
  * 
  * For more information: https://api.slack.com/methods/conversations.history
