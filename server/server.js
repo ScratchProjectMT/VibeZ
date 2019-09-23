@@ -20,12 +20,6 @@ app.use(cookieParser());
  //define route handlers
 app.use('/slack', slack)
 
-app.get('/login', (req, res) => {
-  const login = path.resolve(__dirname, '../client/login.html');
-  return res.sendFile(login);
-});
-
-//serve index.html
 app.get('/', (req, res) => {
   const index = path.resolve(__dirname, '../client/index.html');
   return res.sendFile(index);
