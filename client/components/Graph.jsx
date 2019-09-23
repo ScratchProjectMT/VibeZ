@@ -8,8 +8,8 @@ const Graph = (props) => {
   if(props.data) {
     const xAxis = [];
     const yAxis = [];
-    const backgroundColor = [];
     const messages = [];
+    const reactions = [];
     options = { 
       maintainAspectRatio: false,
       tooltips: {
@@ -20,14 +20,15 @@ const Graph = (props) => {
         }
       }
     }
+    //colors:  green: (24, 166, 137, 0.6) red: (255, 99, 132, 0.6) 
+    //         blue: (3, 0, 129, 0.6) yellow: (255, 211, 1, 0.6)
     for(let i = data.length-1; i >= 0; i--) {
       let newTime = new Date(data[i].time * 1000);
       newTime = newTime.toISOString().slice(0,16);
       xAxis.push(newTime);
       yAxis.push(data[i].sentiment);
       messages.push(data[i].message);
-      if(data[i].sentiment < 0 && graphType === 'Bar Graph') backgroundColor.push('rgba(255, 99, 132, 0.6)');
-      else backgroundColor.push('rgba(24, 166, 137, 0.6)');
+      reactions.push(data[i].reactionSentiment);
     }
     graphData = {
       labels: xAxis,
@@ -35,8 +36,19 @@ const Graph = (props) => {
         {
           label: 'Sentiment Score',
           data: yAxis,
-          backgroundColor: backgroundColor,
-          msg: messages
+          backgroundColor: 'rgba(255, 99, 132, 0.6)',
+          borderColor:'rgba(255, 99, 132, 0.6)',
+          msg: messages,
+          fill: false
+        },
+        {
+          label: 'Reaction Sentiment Score',
+          data: reactions,
+          backgroundColor: 'rgba(24, 166, 137, 0.6)',
+          borderColor: 'rgba(24, 166, 137, 0.6)',
+          hidden: true,
+          msg: messages,
+          fill: false
         }
       ]
     }

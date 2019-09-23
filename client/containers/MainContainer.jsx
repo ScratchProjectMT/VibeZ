@@ -15,6 +15,7 @@ class MainContainer extends Component {
       graphType: 'Line Graph',
       graph: false,
       limit: 100,
+      workspace: 'Connect to a Slack Workspace'
     };
   }
 
@@ -78,8 +79,9 @@ class MainContainer extends Component {
       .then(res => res.json())
       .then(data => {
         this.setState({
-          channel: data[0].id,
-          allChannels: data,
+          channel: data.channels[0].id,
+          allChannels: data.channels,
+          workspace: data.workspace
         });
       })
       .catch(err => console.log('MainContainer.componentDidMount ERROR: ', err));
@@ -94,6 +96,10 @@ class MainContainer extends Component {
     }
     return (
       <div className='main'>
+        <nav>
+          <h1>VibeZ</h1>
+          <h2>{this.state.workspace}</h2>
+        </nav>
         <a href="https://slack.com/oauth/authorize?client_id=653541339828.770547895078&scope=channels:history,channels:read"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
         <div className='channelID'>
           <span>Channel: </span>
@@ -121,7 +127,7 @@ class MainContainer extends Component {
           <input type='number' defaultValue={100} onChange={e => { this.updateLimit(e) }} />
         </div>
         <div>
-          <button onClick={() => { this.displayGraph() }}>Enter</button>
+          <button id="ent" onClick={() => { this.displayGraph() }}>Enter</button>
         </div>
         <Graph graph={this.state.graph} graphType={this.state.graphType} data={this.state.data} chartData={this.state.chartData} />
       </div>
