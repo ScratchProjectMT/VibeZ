@@ -2,6 +2,12 @@ const jwt = require('jsonwebtoken');
 
 const jwtController = { };
 
+/**
+ * @function create Creates JWT from user's access token
+ * 
+ * https://jwt.io/
+ * https://www.npmjs.com/package/jsonwebtoken
+ */
 jwtController.create = (req, res, next) => {
   console.log('jwtController.create');
   const token = jwt.sign(res.locals.token, process.env.PRIVATE_KEY);
@@ -9,6 +15,13 @@ jwtController.create = (req, res, next) => {
   return next()
 }
 
+/**
+ * @function verify Verifies JWT from user
+ * Decrypts token and saves it to res.locals.token
+ * 
+ * https://jwt.io/
+ * https://www.npmjs.com/package/jsonwebtoken
+ */
 jwtController.verify = (req, res, next) => {
   console.log('jwtController.verify');
   if (!req.cookies.token) return next({

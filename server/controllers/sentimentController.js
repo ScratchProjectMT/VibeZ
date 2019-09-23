@@ -4,7 +4,7 @@ const sentiment = new Sentiment();
 const sentimentController = { };
 
 /** 
- * @function sentimentController.parseData Parse messages and return an array of objects.
+ * @function parseData Parse messages and return an array of objects.
  * Each object will contain two keys (time and sentiment);
  * Time is the time the message was posted (seconds since 1970);
  * Sentiment is a value from -1 to 1;

@@ -2,22 +2,29 @@ const fetch = require('node-fetch');
 
 const slackController = { };
 
-const API_URI = `https://slack.com/api/conversations`;
+const API_URI = `https://slack.com/api`;
 
 /** 
  * @function getHistory fetch list of slack messages from slack API
- * The url can include token, channel id, latest, limit, and oldest.
+ * The url has the query params token, channel id, latest, limit, and oldest.
+ * Token: the user's access token
+ * Channel ID: the channel to get the chat history for
+ * Latest: The latest time (i.e. end)
+ * Limit: Maximum number of messages
+ * Oldest: The oldest time (i.e. start)
+ * The data is stored in res.locals.messages
+ * 
  * For more information: https://api.slack.com/methods/conversations.history
  */
 slackController.getHistory = async (req, res, next) => {
   console.log('slackController.getHistory');
+  const token = res.locals.token;
+  const channel = req.query.channel;
+  const latest = req.query.latest || Math.floor(Date.now() / 1000);
+  const limit = req.query.limit || 100;
+  const oldest = req.query.oldest || latest - 86400;
+  const URI = `${API_URI}/conversations.history?token=${token}&channel=${channel}&latest=${latest}&limit=${limit}&oldest=${oldest}`;
   try {
-    const token = res.locals.token;
-    const channel = req.query.channel;
-    const latest = req.query.latest || Math.floor(Date.now() / 1000);
-    const limit = req.query.limit || 100;
-    const oldest = req.query.oldest || latest - 86400;
-    const URI = `${API_URI}.history?token=${token}&channel=${channel}&latest=${latest}&limit=${limit}&oldest=${oldest}`;
     const rawResult = await fetch(URI);
     const { messages } = await rawResult.json();
     res.locals.messages = messages;
@@ -31,16 +38,18 @@ slackController.getHistory = async (req, res, next) => {
   }
 }
 
-
 /** 
  * @function getChannels fetch list of all channels
- * @returns an array of objects. Each object has two keys (id and name)
- * https://api.slack.com/methods/conversations.list
+ * The url has a single query param: the user's access token
+ * Parses return data into an array of objects. Each object has two keys (id and name)
+ * Data is stored in res.locals.channels
+ * 
+ * For more information: https://api.slack.com/methods/conversations.list
  */
 slackController.getChannels = async (req, res, next) => {
   console.log('slackController.getChannels');
   const token = res.locals.token;
-  const URI = `${API_URI}.list?token=${token}`;
+  const URI = `${API_URI}/conversations.list?token=${token}`;
   try {
     const rawChannels = await fetch(URI);
     const { channels } = await rawChannels.json();
@@ -61,6 +70,16 @@ slackController.getChannels = async (req, res, next) => {
   } 
 }
 
+/**
+ * @function oAuth runs steps 3-4 of oAuth process
+ * This is where the user will be redirected after approving our app
+ * The request should have the query 'code' which grants us permission for our requested scopes
+ * We then request an access token from Slack by sending this code as a query param
+ * This fetch sends our client ID and client secret in the authorization header
+ * If successful, we save the unencrypted token in res.locals.token
+ * 
+ * For more information: https://api.slack.com/docs/oauth
+ */
 slackController.oAuth = async (req, res, next) => {
   console.log('slackController.oAuth');
   if (!req.query.code) {
@@ -70,7 +89,7 @@ slackController.oAuth = async (req, res, next) => {
       message: 'Did not receive code in query',
     })
   }
-  const URI = `https://slack.com/api/oauth.access?code=${req.query.code}`;
+  const URI = `${API_URI}/oauth.access?code=${req.query.code}`;
   const options = {
     headers: {
       "Authorization": `Basic ${Buffer.from(process.env.CLIENT_ID + ":" + process.env.CLIENT_SECRET).toString('base64')}`,
