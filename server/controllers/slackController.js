@@ -27,7 +27,18 @@ slackController.getHistory = async (req, res, next) => {
   try {
     const rawResult = await fetch(URI);
     const { messages } = await rawResult.json();
-    res.locals.messages = messages;
+    // This step parses the reactions (i.e. emoji responses) into a string
+    const parsedMessages = messages.map(msg => ({
+      text: msg.text,
+      reactionString: (msg.reactions)
+        ? msg.reactions
+          .reduce((reactionString, reaction) => reactionString.concat(`${reaction.name} `.repeat(reaction.count)), '')
+          .slice(0, -1)
+        : '',
+      ts: msg.ts,
+    }));
+    console.dir(parsedMessages);
+    res.locals.messages = parsedMessages;
     next();
   } catch (err) {
     return next({

@@ -14,6 +14,9 @@ sentimentController.parseData = (req, res, next) => {
   const sentimentData = res.locals.messages.map(msg => ({
       message: msg.text,
       sentiment: sentiment.analyze(msg.text).comparative,
+      reactionSentiment: (msg.reactionString)
+        ? sentiment.analyze(msg.reactionString).comparative
+        : 0,
       time: Math.floor(msg.ts),
   }));
   res.locals.sentimentData = sentimentData;
