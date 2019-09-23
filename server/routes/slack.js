@@ -6,7 +6,7 @@ const jwtController = require('../controllers/jwtController')
 const sentimentController = require('../controllers/sentimentController');
 const router = express.Router();
 
-router.get('/', slackController.getHistory, sentimentController.parseData, (req, res) => {
+router.get('/', jwtController.verify, slackController.getHistory, sentimentController.parseData, (req, res) => {
   const { sentimentData } = res.locals;
   return res.status(200).json(sentimentData);
 });

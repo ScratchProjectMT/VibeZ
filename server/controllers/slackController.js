@@ -2,27 +2,25 @@ const fetch = require('node-fetch');
 
 const slackController = { };
 
-const DEFAULT_CHANNEL = 'CKA6RDALE';
+const API_URI = `https://slack.com/api/conversations`;
 
 /** 
  * @function getHistory fetch list of slack messages from slack API
  * The url can include token, channel id, latest, limit, and oldest.
  * For more information: https://api.slack.com/methods/conversations.history
- * 
  */
 slackController.getHistory = async (req, res, next) => {
-  console.log('slackController.getHistory: ', slackController.getHistory);
-  
+  console.log('slackController.getHistory');
   try {
-    const channel = req.query.channel || DEFAULT_CHANNEL;
+    const token = res.locals.token;
+    const channel = req.query.channel;
     const latest = req.query.latest || Math.floor(Date.now() / 1000);
-    const oldest = req.query.oldest || latest - 86400;
     const limit = req.query.limit || 100;
-    const token = req.cookies.token;
-    const URI = `https://slack.com/api/conversations.history?token=${token}&channel=${channel}&latest=${latest}&limit=${limit}&oldest=${oldest}`;
+    const oldest = req.query.oldest || latest - 86400;
+    const URI = `${API_URI}.history?token=${token}&channel=${channel}&latest=${latest}&limit=${limit}&oldest=${oldest}`;
     const rawResult = await fetch(URI);
     const { messages } = await rawResult.json();
-    res.locals.data = messages;
+    res.locals.messages = messages;
     next();
   } catch (err) {
     return next({
@@ -37,11 +35,12 @@ slackController.getHistory = async (req, res, next) => {
 /** 
  * @function getChannels fetch list of all channels
  * @returns an array of objects. Each object has two keys (id and name)
+ * https://api.slack.com/methods/conversations.list
  */
 slackController.getChannels = async (req, res, next) => {
-  console.log('slackController.getChannels: ', slackController.getChannels);
-  const legitToken = res.locals.token;
-  const URI = `https://slack.com/api/conversations.list/?token=${legitToken}`;
+  console.log('slackController.getChannels');
+  const token = res.locals.token;
+  const URI = `${API_URI}.list?token=${token}`;
   try {
     const rawChannels = await fetch(URI);
     const { channels } = await rawChannels.json();
@@ -63,7 +62,7 @@ slackController.getChannels = async (req, res, next) => {
 }
 
 slackController.oAuth = async (req, res, next) => {
-  console.log('slackController.oAuth: ', slackController.oAuth);
+  console.log('slackController.oAuth');
   if (!req.query.code) {
     return next({
       log: 'No code',

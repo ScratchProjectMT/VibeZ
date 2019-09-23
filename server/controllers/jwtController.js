@@ -2,33 +2,29 @@ const jwt = require('jsonwebtoken');
 
 const jwtController = { };
 
-jwtController.create = async (req, res, next) => {
-  console.log('jwtController.create: ', jwtController.create);
-  try {
-    const token = await jwt.sign(res.locals.token, process.env.PRIVATE_KEY);
-    res.locals.token = token;
-    return next()
-  } catch (err) {
-    return next({
-      log: `error creating a jwt ${err}`,
-      status: 500,
-      message: 'server error'
-    });
-  }
+jwtController.create = (req, res, next) => {
+  console.log('jwtController.create');
+  const token = jwt.sign(res.locals.token, process.env.PRIVATE_KEY);
+  res.locals.token = token;
+  return next()
 }
 
-jwtController.verify = async (req, res, next) => {
-  console.log('jwtController.verify: ', jwtController.verify);
+jwtController.verify = (req, res, next) => {
+  console.log('jwtController.verify');
+  if (!req.cookies.token) return next({
+    log: `no jwt token present`,
+    status: 400,
+    message: `Not authenticated`,
+  });
+  const token = req.cookies.token;
   try {
-    if (!req.cookies.token) return next();
-    const token = req.cookies.token;
-    const legitToken = await jwt.verify(token, process.env.PRIVATE_KEY);
+    const legitToken = jwt.verify(token, process.env.PRIVATE_KEY);
     res.locals.token = legitToken;
     next();
   } catch (err) {
     return next({
       log: `error verifying jwt ${err}`,
-      status: 500,
+      status: 400,
       message: 'server error'
     });
   }
