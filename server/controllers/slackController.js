@@ -53,19 +53,17 @@ slackController.getChannels = async (req, res, next) => {
   try {
     const rawChannels = await fetch(URI);
     const { channels } = await rawChannels.json();
-    const channelsList = channels.map(channel => {
-      return {
-        id: channel['id'],
-        name: channel['name'],
-      }
-    })
-    res.locals.channels = channelsList
+    const channelsList = channels.map(channel => ({
+      id: channel['id'],
+      name: channel['name'],
+    }));
+    res.locals.channels = channelsList;
     return next();
   } catch (err) {
     return next({
       status: 500,
       log: `Get Channel error: ${err}`,
-      message: 'Server error while trying to get channels list'
+      message: 'Server error while trying to get channels list',
     })
   } 
 }
