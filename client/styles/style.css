@@ -3,21 +3,37 @@ html, body {
   }
   
   body {
-    background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+    background-image: linear-gradient(135deg, #fdfcfb 0%, #D9C0BA 100%);
     background-repeat: no-repeat;
     background-size: cover;
     margin : 0;
     font-size: 24px;
+    padding-top: 100px;
   }
+
+  nav {
+  background-color: #682ABF;
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */
+  height: 60px;
+  border-radius: 0px 10px;
+}
   
+
   h1 {
-    text-align: center;
-    color: #422761;
-    margin-top: 0;
-    padding-top: 50px;
-    font-size: 80px;
+    font-size: 1.5em;
+    margin-left: 10px;
+    margin-top: 10px;
+    display: table;
+    vertical-align: left;
+    float: left;
+    color: #682ABF;
+    font-weight: bold;
+    /* color: #422761*/
+    /* font-size: 80px; */
   } 
-  
+
   input, select, button {
     font-size: 20px;
     background-color: #F2F2F2;
